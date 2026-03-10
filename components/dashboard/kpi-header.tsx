@@ -1,7 +1,9 @@
 'use client'
 
-import { Activity, Gauge, HeartPulse, PackageCheck } from 'lucide-react'
+import { Activity, Gauge, HeartPulse, PackageCheck, Cpu, ScrollText } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useFactoryStore } from '@/store/factory-store'
 
 interface KpiCardProps {
@@ -31,8 +33,15 @@ function KpiCard({ label, value, icon, trend, color }: KpiCardProps) {
   )
 }
 
+const NAV_ITEMS = [
+  { href: '/', label: '儀表板', icon: Activity },
+  { href: '/devices', label: '設備列表', icon: Cpu },
+  { href: '/events', label: '事件記錄', icon: ScrollText },
+]
+
 export function KpiHeader() {
   const [time, setTime] = useState<Date | null>(null)
+  const pathname = usePathname()
   const kpi = useFactoryStore((s) => s.kpi)
   const wsStatus = useFactoryStore((s) => s.wsStatus)
 
@@ -97,7 +106,28 @@ export function KpiHeader() {
           </div>
         </div>
 
-        <div className="hidden items-center gap-2 md:flex">
+        {/* 導航連結 */}
+        <nav className="hidden items-center gap-1 md:flex">
+          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+            const isActive = pathname === href
+            return (
+              <Link
+                key={href}
+                href={href}
+                className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                  isActive
+                    ? 'bg-neon-cyan/15 text-neon-cyan'
+                    : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                }`}
+              >
+                <Icon className="h-3.5 w-3.5" />
+                {label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        <div className="hidden items-center gap-2 lg:flex">
           <div className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1 border border-border">
             <span className={`h-2 w-2 rounded-full ${wsDotClass}`} />
             <span className={`font-mono text-xs ${wsTextClass}`}>{wsLabel}</span>
