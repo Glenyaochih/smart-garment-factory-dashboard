@@ -42,10 +42,14 @@ const NAV_ITEMS = [
 
 export function KpiHeader() {
   const [time, setTime] = useState<Date | null>(null)
+  const [mounted, setMounted] = useState(false)
   const pathname = usePathname()
   const { theme, setTheme } = useTheme()
   const kpi = useFactoryStore((s) => s.kpi)
   const wsStatus = useFactoryStore((s) => s.wsStatus)
+
+  // next-themes：避免 SSR/CSR 不一致的 Hydration 錯誤
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     setTime(new Date())
@@ -137,13 +141,15 @@ export function KpiHeader() {
           <time className="hidden font-mono text-xs text-muted-foreground lg:block">
             {time ? time.toLocaleTimeString('zh-TW', { hour12: false }) : '--:--:--'}
           </time>
-          {/* 主題切換按鈕 */}
+          {/* 主題切換按鈕（mounted 後才渲染，避免 SSR Hydration 不一致）*/}
           <button
             onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
             className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             aria-label="切換深色/淺色模式"
           >
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted
+              ? theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />
+              : <span className="h-4 w-4" />}
           </button>
         </div>
       </div>
