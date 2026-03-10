@@ -19,6 +19,6 @@
 
 ## Phase 3：品質優化
 
-- [ ] **Dark / Light 模式切換**：Header 加入主題切換按鈕，使用 `next-themes`
-- [ ] **RWD 手機版優化**：確認所有元件在 375px 寬度下排版正常
-- [ ] **空狀態 / 錯誤狀態**：API 失敗或資料為空時，顯示友善提示而非空白
+- [x] **Dark / Light 模式切換**：Header 加入主題切換按鈕，使用 `next-themes`
+- [x] **RWD 手機版優化**：手機版底部導航列，表格 overflow-x-auto
+- [x] **空狀態 / 錯誤狀態**：API 失敗時顯示錯誤頁（error.tsx），空資料顯示友善提示

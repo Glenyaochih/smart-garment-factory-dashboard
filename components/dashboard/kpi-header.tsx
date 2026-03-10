@@ -1,9 +1,10 @@
 'use client'
 
-import { Activity, Gauge, HeartPulse, PackageCheck, Cpu, ScrollText } from 'lucide-react'
+import { Activity, Gauge, HeartPulse, PackageCheck, Cpu, ScrollText, Sun, Moon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import { useFactoryStore } from '@/store/factory-store'
 
 interface KpiCardProps {
@@ -42,6 +43,7 @@ const NAV_ITEMS = [
 export function KpiHeader() {
   const [time, setTime] = useState<Date | null>(null)
   const pathname = usePathname()
+  const { theme, setTheme } = useTheme()
   const kpi = useFactoryStore((s) => s.kpi)
   const wsStatus = useFactoryStore((s) => s.wsStatus)
 
@@ -127,16 +129,45 @@ export function KpiHeader() {
           })}
         </nav>
 
-        <div className="hidden items-center gap-2 lg:flex">
-          <div className="flex items-center gap-1.5 rounded-full bg-card px-3 py-1 border border-border">
+        <div className="flex items-center gap-2">
+          <div className="hidden items-center gap-1.5 rounded-full bg-card px-3 py-1 border border-border lg:flex">
             <span className={`h-2 w-2 rounded-full ${wsDotClass}`} />
             <span className={`font-mono text-xs ${wsTextClass}`}>{wsLabel}</span>
           </div>
-          <time className="font-mono text-xs text-muted-foreground">
+          <time className="hidden font-mono text-xs text-muted-foreground lg:block">
             {time ? time.toLocaleTimeString('zh-TW', { hour12: false }) : '--:--:--'}
           </time>
+          {/* 主題切換按鈕 */}
+          <button
+            onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            aria-label="切換深色/淺色模式"
+          >
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </button>
         </div>
       </div>
+
+      {/* 手機版導航列 */}
+      <nav className="flex items-center gap-1 border-t border-border px-4 py-1.5 md:hidden">
+        {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
+          const isActive = pathname === href
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-2 py-1.5 text-xs font-medium transition-colors ${
+                isActive
+                  ? 'bg-neon-cyan/15 text-neon-cyan'
+                  : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+              }`}
+            >
+              <Icon className="h-3.5 w-3.5" />
+              {label}
+            </Link>
+          )
+        })}
+      </nav>
 
       <div className="grid grid-cols-2 gap-2 px-4 pb-3 lg:grid-cols-4 lg:px-6">
         <KpiCard
