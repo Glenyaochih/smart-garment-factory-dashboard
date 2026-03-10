@@ -117,7 +117,7 @@ export function KpiHeader() {
         />
         <KpiCard
           label="訂單完成率"
-          value="—"
+          value={kpi?.order_completion_rate != null ? `${(kpi.order_completion_rate * 100).toFixed(1)}%` : '—'}
           icon={<PackageCheck className="h-5 w-5 text-neon-green" />}
           color="bg-neon-green/15"
         />
