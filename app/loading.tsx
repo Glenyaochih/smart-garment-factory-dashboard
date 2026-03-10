@@ -3,6 +3,14 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function Loading() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      {/* 伺服器喚醒中提示（Render free tier 冷啟動約需 30 秒）*/}
+      <div className="flex items-center justify-center gap-2 border-b border-neon-amber/30 bg-neon-amber/5 px-4 py-2">
+        <span className="h-2 w-2 animate-pulse rounded-full bg-neon-amber" />
+        <p className="font-mono text-xs text-neon-amber">
+          正在喚醒伺服器，首次載入約需 30 秒，請稍候…
+        </p>
+      </div>
+
       {/* Header skeleton */}
       <header className="border-b border-border bg-card/50">
         <div className="flex items-center justify-between px-4 py-2 lg:px-6">
